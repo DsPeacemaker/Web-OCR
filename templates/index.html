@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="rus">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Распознование текста</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='Logo2.gif')}}" type="image/gif">
+    <style>
+.select select{
+/* стиль для выбора опций языка и типа файла*/
+background-color: #3e8ed0;
+border-color: transparent;
+color: #fff;
+display: inline-block;
+}
+
+.select-format{
+width: 311px;
+background-color: #3e8ed0;
+}
+
+form {
+/* стиль для отображения форм выбора на одной строке*/
+display: inline-block; /*Or display: inline*/;
+height: 400px;
+}
+
+.sub{
+/* стиль для кнопки типа submit*/
+background-color: #3e8ed0;
+border-color: transparent;
+color: #fff;
+font-size: 1em;
+}
+
+
+
+.header{
+background-color: #3a5f7e;
+}
+
+hr{
+background-color: white;
+border: none;
+}
+
+.image{
+height: 120px;
+}
+
+.btn {
+/* стиль для ссылки в шапке*/
+display: inline-block; /* Строчно-блочный элемент */
+background-color: #3e8ed0; /* Серый цвет фона */
+border-color: transparent;
+color: #fff; /* Белый цвет текста */
+padding: 1rem 1.5rem; /* Поля вокруг текста */
+text-decoration: none; /* Убираем подчёркивание */
+border-radius: 3px; /* Скругляем уголки */
+}
+
+
+.forms-option{
+    display: inline-block;
+    font-size: large;
+    /*letter-spacing*/
+}
+
+footer{
+ background-color: #0a1524;
+ color: #ffffff;
+}
+
+.footer_text{
+text-align: end;
+font-size: medium;
+}
+
+
+.text-finish{
+font-size: larger;
+}
+
+.hero.is-success {
+/* стиль для всей страницы*/
+background-color: #3a5f7e;
+color: #fff;
+}
+
+
+
+
+#upload-container {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     width: 356px;
+     height: 100px;
+     outline: 2px dashed #5d5d5d;
+     outline-offset: -12px;
+     background-color: #363636;
+}
+
+.file-name{
+/* стиль для формы названия файла в поле выбора файла*/
+background-color: #ffffff;
+color: #0a0a0a;
+}
+
+.choose_file{
+width: 800px;
+height: 66px;
+}
+    </style>
+</head>
+<body>
+<section class="hero is-success is-fullheight">
+    <div class="header">
+        <header>
+            <a href="/">
+                <img class="image"   align = "left" src ="{{ url_for('static', filename='Logo2.png')}}" alt="Logo">
+            </a>
+        </header>
+    </div>
+    <h1 class="title" align="center">
+        <hr>
+        Бесплатный сервис по распознаванию текста из изображений
+    </h1>
+    <h2 class="subtitle" align="center">
+        Преобразование изображений в редактируемый формат txt (простой текст)
+        <br>Загрузите фотографию для распознавания
+    </h2>
+    <div class="hero-body">
+        <div class="container">
+            <center>
+                <form action="" enctype="multipart/form-data" method="POST">
+                    <div class="choose_file">
+                        <div id="file-js-example" class="file is-medium is-info has-name is-fullwidth">
+                            <label class="file-label">
+                                <input type=file class="file-input" name=file multiple accept="image/*">
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <svg class="svg-inline--fa fa-upload fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="upload" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"></path></svg>
+                                    </span>
+                                    <span class="file-label">
+                                        Выберите файл
+                                    </span>
+                                </span>
+                                <span class="file-name">
+                                    Файл не выбран
+                                </span>
+                            </label>
+                            <input type=submit class = "sub" value="Отправить">
+                        </div>
+                    </div>
+                    <div class="forms-option">
+                        <div class="select is-rounded">
+                            <div  class="select_lang">
+                                <p>
+                                    <select size="1" name="language">
+                                        <option value="rus+eng" hidden="">Выберите язык</option>
+                                        <option value="eng" >Английский</option>
+                                        <option value="rus" >Русский</option>
+                                        <option value="eng+rus" >Английский+русский</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="select is-rounded">
+                            <div class="select_format">
+                                <p>
+                                    <select class="select-format" size="1" name="format">
+                                        <option value=".txt" hidden="">Выберите формат файла</option>
+                                        <option value=".txt">Текстовый (txt)</option>
+                                        <option value=".pdf">Adobe Acrobat (pdf)</option>
+                                        <option value=".docx">Microsoft Word (docx)</option>
+                                        <option value=".xlsx">Microsoft Excel (xlsx)</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </center>
+        </div>
+    </div>
+    <div class="text-finish" align="center">Принцип работы ресурса:<br>
+        1. Отсканируйте или сфотографируйте текст для распознавания.<br>
+        2. Загрузите файл.<br>
+        3. Выберите язык содержимого текста в файле.<br>
+        4. Выберите формат выходного файла.<br>
+        5. После обработки файла вы получите результат в выбранном формате.<br> (обработка может занять некоторое время)</div>
+</section>
+</body>
+<script>
+  const fileInput = document.querySelector('#file-js-example input[type=file]');
+  fileInput.onchange = () => {
+    if (fileInput.files.length > 0) {
+      const fileName = document.querySelector('#file-js-example .file-name');
+      fileName.textContent = fileInput.files[0].name;
+    }
+  }
+</script>
+</html>

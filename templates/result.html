@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Результат распознования</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='Logo2.gif')}}" type="image/gif">
+    <style>
+    .header{
+background-color: #3a5f7e;
+}
+
+
+.image{
+height: 120px;
+}
+
+.btn {
+/* стиль для ссылки в шапке*/
+display: inline-block; /* Строчно-блочный элемент */
+background-color: #3e8ed0; /* Серый цвет фона */
+border-color: transparent;
+color: #fff; /* Белый цвет текста */
+padding: 1rem 1.5rem; /* Поля вокруг текста */
+text-decoration: none; /* Убираем подчёркивание */
+border-radius: 3px; /* Скругляем уголки */
+}
+
+textarea{
+    border-radius: 10px;
+    outline: none;
+    padding-left: 6px;
+    padding-top: 6px;
+}
+            .hero.is-success {
+        /* стиль для всей страницы*/
+    background-color: #3a5f7e;
+    color: #fff;
+}
+.hero-body {
+height: 1px;
+}
+.button is-rounded{
+    background-color: #3e8ed0;
+    outline: 0;
+}
+
+
+
+hr{
+background-color: white;
+border: none;
+}
+
+.functional{
+padding: 5px;
+}
+    </style>
+</head>
+<body>
+<section class="hero is-success is-fullheight">
+    <div class="header">
+        <header>
+                <a href="/">
+                    <img class="image" align = "left" src ="{{ url_for('static', filename='Logo2.png')}}" alt="Logo">
+                </a>
+        </header>
+    </div>
+    <hr>
+    <div class="hero-body">
+        <div class="container">
+            <center>
+                <h1 class="title">
+                    Результат распознавания
+                </h1>
+                <div class="subtitle">
+                    <textarea rows="19" cols="90" id="textarea">{{content}}</textarea><br>
+                    <button class = "button is-info is-rounded" onclick="myFunction()">Скопировать результат</button>
+                    <div class="functional">
+                    <form action="" enctype="multipart/form-data" method="POST">
+                        <a class="button is-info is-rounded" href="/result/{{filename}}" download>Скачать текст</a>
+                    </form>
+                    </div>
+                </div>
+            </center>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+
+<script>
+function myFunction(){
+    var copyText = document.getElementById("textarea");
+    copyText.select();
+    document.execCommand("copy");
+    alert("Текст скопирован: "+copyText.value);
+}
+</script>

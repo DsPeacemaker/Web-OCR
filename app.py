@@ -120,12 +120,7 @@ def processing(filename):
 
                 # Сохранить координаты соединения в экземпляре таблицы
                 table.set_joints(joint_coords)
-
                 tables.append(table)
-
-                # cv.rectangle(image, (table.x, table.y), (table.x + table.w, table.y + table.h), (0, 255, 0), 1, 8, 0)
-                # cv.imshow("tables", image)
-                # cv.waitKey(0)
 
             # Распознавание и импорт в эксель
             out = "bin/"
@@ -136,19 +131,15 @@ def processing(filename):
 
             utils.mkdir(out)
             utils.mkdir("bin/table/")
-
             utils.mkdir("result/")
             name = fname + '.xlsx'
             workbook = xlsxwriter.Workbook('result/'+name)
 
             for table in tables:
                 worksheet = workbook.add_worksheet()
-
                 table_entries = table.get_table_entries
-
                 table_roi = image[table.y:table.y + table.h, table.x:table.x + table.w]
                 table_roi = cv.resize(table_roi, (table.w * mult, table.h * mult))
-
                 cv.imwrite(out + table_name, table_roi)
 
                 num_img = 0
@@ -164,9 +155,7 @@ def processing(filename):
 
                         # fname = utils.run_textcleaner(fname, num_img)
                         text = utils.run_tesseract(fname, num_img, psm, oem)
-
                         num_img += 1
-
                         worksheet.write(i, j, text)
             workbook.close()
             filename = name

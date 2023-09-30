@@ -17,6 +17,7 @@ class Table:
         self.joints = []
         row_y = joints[0][1]
         row = []
+        
         for i in range(len(joints)):
             if i == len(joints) - 1:
                 row.append(joints[i])

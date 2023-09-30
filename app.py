@@ -15,6 +15,7 @@ pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesse
 
 UPLOAD_FOLDER = 'C:/Users/denis/PycharmProjects/Web1/uploads'
 RESULT_FOLDER = 'C:/Users/denis/PycharmProjects/Web1/result'
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'PNG', 'JPG', 'JPEG'}
 
 app = Flask(__name__)
@@ -38,28 +39,38 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     global language, form, fname
+    
     if request.method == 'POST':
         form = request.form.get('format')
         language = request.form.get('language')
+        
         if 'file' not in request.files:
             flash('Файл не читается')
+            
             return redirect(request.url)
+            
         file = request.files['file']
+        
         if file.filename == '':
             flash('нет выбранного файла')
+            
             return redirect(request.url)
+            
         if file and allowed_file(file.filename):
             filename, file_extension = os.path.splitext(file.filename)
             fname = str(uuid.uuid4())
             filename = fname + file_extension
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
             return redirect('/process/' + filename)
+            
     return render_template('index.html')
 
 
 @app.route('/process/<filename>', methods=['GET'])
 def processing(filename):
     global form, fname
+    
     if request.method == 'GET':
         if form == ".xlsx":
             image = cv.imread('uploads/' + filename)
@@ -86,6 +97,7 @@ def processing(filename):
             tables = []
             for i in range(len(contours)):
                 (rect, table_joints) = verify_table(contours[i], intersections)
+                
                 if rect == None or table_joints == None:
                     continue
 
@@ -123,16 +135,19 @@ def processing(filename):
                 num_img = 0
                 for i in range(len(table_entries)):
                     row = table_entries[i]
+                    
                     for j in range(len(row)):
                         entry = row[j]
                         entry_roi = table_roi[entry[1] * mult: (entry[1] + entry[3]) * mult,
                                     entry[0] * mult:(entry[0] + entry[2]) * mult]
+                        
                         fname = out + "table/cell" + str(num_img) + ".jpg"
                         cv.imwrite(fname, entry_roi)
                         text = run_tesseract(fname, num_img, psm, oem)
                         num_img += 1
                         worksheet.write(i, j, text)
             workbook.close()
+            
             filename = name
             download(filename)
             text = 'Нажмите кнопку "Скачать текст", чтобы загрузить таблицу'
@@ -140,16 +155,19 @@ def processing(filename):
             text = ocr(filename)
             with open(f"text.txt", 'w') as text_file:
                 text_file.write(text)
+                
             if form == ".pdf":
                 doc = aw.Document("text.txt")
                 doc.save(fname + ".pdf")
                 name = fname + '.pdf'
+                
                 os.replace('C:\\Users\\denis\\PycharmProjects\\Web1\\' + name,
                            'C:\\Users\\denis\\PycharmProjects\\Web1\\result\\' + name)
             elif form == ".docx":
                 doc = aw.Document("text.txt")
                 doc.save(fname + ".docx")
                 name = fname + ".docx"
+                
                 os.replace('C:\\Users\\denis\\PycharmProjects\\Web1\\' + name,
                            'C:\\Users\\denis\\PycharmProjects\\Web1\\result\\' + name)
             os.renames("text.txt", fname + ".txt")
@@ -158,6 +176,7 @@ def processing(filename):
                        'C:\\Users\\denis\\PycharmProjects\\Web1\\result\\' + name)
             filename = fname + form
             download(filename)
+            
     return render_template('result.html', filename=filename, content=text)
 
 
@@ -168,21 +187,26 @@ def download(filename):
 
 def ocr(filename):
     global language, fname
+    
     input_image = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     img = cv.imread(input_image, cv.IMREAD_GRAYSCALE)
     img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     custom_config = r'--oem 3 --psm 6'
     text = pytesseract.image_to_string(img, lang=language, config=custom_config)
+    
     return text
 
 
 def run_tesseract(filename, psm, oem):
     global language
+    
     image = Image.open(filename)
     configuration = "--psm " + str(psm) + " --oem " + str(oem)
     text = pytesseract.image_to_string(image, lang=language, config=configuration)
+    
     if len(text.strip()) == 0:
         text = pytesseract.image_to_string(image, lang=language, config=configuration)
+        
     return text
 
 

@@ -95,15 +95,17 @@ def processing(filename):
             (contours, _) = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
             intersections = cv.bitwise_and(horizontal, vertical)
 
-
+            # Получение таблицы из изображений
             tables = []
             for i in range(len(contours)):
+                # область таблицы
                 (rect, table_joints) = verify_table(contours[i], intersections)
                 
                 if rect == None or table_joints == None:
                     continue
-
+                # Новый экземпляр таблицы
                 table = Table(rect[0], rect[1], rect[2], rect[3])
+                # n-мерный массив координат стыков таблицы
                 joint_coords = []
 
                 for i in range(len(table_joints)):
@@ -112,10 +114,11 @@ def processing(filename):
                 joint_coords = np.asarray(joint_coords)
                 sorted_indices = np.lexsort((joint_coords[:, 0], joint_coords[:, 1]))
                 joint_coords = joint_coords[sorted_indices]
-
+                
+                # Сохранить координаты соединения в экземпляре таблицы
                 table.set_joints(joint_coords)
                 tables.append(table)
-
+            
             out = "bin/"
             table_name = "table.jpg"
             psm = 10
@@ -148,6 +151,7 @@ def processing(filename):
                         text = run_tesseract(fname, num_img, psm, oem)
                         num_img += 1
                         worksheet.write(i, j, text)
+                        
             workbook.close()
             
             filename = name
@@ -209,6 +213,7 @@ def run_tesseract(filename, num_img, psm, oem):
     text = pytesseract.image_to_string(image, lang=language, config=configuration)
     
     if len(text.strip()) == 0:
+        #configuration += " -c tessedit_char_whitelist=0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNMЙУКЕНГШЩЗФЫВАПРОЛДЯЧСМИТЬйцукенгшщзхфывапролдячсмитьбюх,."
         text = pytesseract.image_to_string(image, lang=language, config=configuration)
         
     return text

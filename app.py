@@ -224,15 +224,5 @@ def verify_table(contour, intersections):
     return rect, possible_table_joints
 
 
-def write_pdf():
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=16)
-    f = open("text.txt", "r")
-    for x in f:
-        pdf.cell(50, 10, txt=x, ln=1, align='C')
-    pdf.output("text.pdf", 'F')
-
-
 if __name__ == "__main__":
     app.run(debug=True)

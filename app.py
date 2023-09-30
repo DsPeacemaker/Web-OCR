@@ -5,6 +5,7 @@ import aspose.words as aw
 import uuid
 import xlsxwriter
 import numpy as np
+
 from table import Table
 from fpdf import FPDF
 from PIL import Image
@@ -38,6 +39,7 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
+    '''Загрузка файла на сервер'''
     global language, form, fname
     
     if request.method == 'POST':
@@ -186,6 +188,7 @@ def download(filename):
 
 
 def ocr(filename):
+    '''Распознавание символов с фотографий tesseract'''
     global language, fname
     
     input_image = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -197,7 +200,8 @@ def ocr(filename):
     return text
 
 
-def run_tesseract(filename, psm, oem):
+def run_tesseract(filename, num_img, psm, oem):
+    '''Настройки Tesseract для таблиц'''
     global language
     
     image = Image.open(filename)
@@ -226,6 +230,7 @@ def mkdir(path):
 
 
 def verify_table(contour, intersections):
+    '''Проверка является ли изображение таблицей'''
     area = cv.contourArea(contour)
 
     if area < MIN_TABLE_AREA:
